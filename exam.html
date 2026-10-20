@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google" content="notranslate">
-<meta name="robots" content="noindex">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="googlebot" content="noindex, nofollow">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#4C3D8E">
 <title>اختبار الجاهزية</title>
@@ -275,7 +276,12 @@ function rdSumHTML(s, opt) {
             startedAt: null, endsAt: null, timer: null, result: null, submitting: false, qEnd: null, blur: 0, timedOut: 0, reason: '', warned: false };
   var LET = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
   /* 3.4: اسم القسم أعلى الصفحة (من رابط الاختبار ثم من بيانات الاختبار) — كل قسم له اختباره المستقل */
-  var DEPT = String(params.get('d') || '').replace(/[<>]/g, '').trim().slice(0, 60);
+  var DEPT = String(params.get('d') || '').replace(/[<>]/g, '').trim().slice(0, 60), DEPT_ID = '';
+  /* الرابط القصير يحمل رمز القسم (حروف لاتينية)، ويُجلب اسمه من البيانات العامة */
+  if (/^[A-Za-z0-9_-]+$/.test(DEPT)) { DEPT_ID = DEPT; DEPT = '';
+    try { sb.rpc('public_bootstrap').then(function (r) { var L = (r && r.data && r.data.departments) || [], d = null;
+      for (var i = 0; i < L.length; i++) if (L[i].id === DEPT_ID) d = L[i];
+      if (d && d.name && !DEPT) { DEPT = d.name; showDept(); } }, function () {}); } catch (e) {} }
   function showDept() {
     if (!DEPT) return; var b = document.getElementById('deptBar');
     if (!b) { b = document.createElement('div'); b.id = 'deptBar'; var t = document.querySelector('.top'); if (t) t.insertAdjacentElement('afterend', b); else document.body.insertBefore(b, document.body.firstChild); }

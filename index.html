@@ -6,7 +6,15 @@
 <meta name="google" content="notranslate">
 <meta http-equiv="Content-Language" content="ar">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>قسم المحاسبة بكلية الأعمال</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="googlebot" content="noindex, nofollow">
+<title>منصة تيسير أعمال اللجان</title>
+<meta name="description" content="منصة تيسير أعمال اللجان: منصة إلكترونية لعرض البرامج المرتبطة باللجان في كلية الأعمال والدخول إليها.">
+<meta name="application-name" content="منصة تيسير أعمال اللجان">
+<meta name="apple-mobile-web-app-title" content="منصة تيسير أعمال اللجان">
+<meta property="og:title" content="منصة تيسير أعمال اللجان">
+<meta property="og:description" content="منصة إلكترونية لعرض البرامج المرتبطة باللجان في كلية الأعمال والدخول إليها.">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script src="config.js"></script>
 <script>/* فتح الاتصال بقاعدة البيانات مبكرًا، بالتوازي مع تحميل الصفحة */
@@ -2170,7 +2178,8 @@ function delCommittee(cid){
 /* عنوان الموقع: يُبنى من اسم القسم والكلية في «الإعدادات العامة» */
 /* المسميات التي يعدّلها المالك من «الإعدادات العامة ← الهوية والمسميات» */
 function LBL(k,d){const L=(DB&&DB.settings&&DB.settings.labels)||{};const v=L[k];return (v!=null&&String(v).trim())?String(v).trim():d}
-function siteTitleAuto(){const S=DB.settings,many=(DB.departments||[]).length>1;return many?'أقسام '+S.college:S.dept+(S.college?' ب'+S.college:'')}
+function siteTitleAuto(){return 'منصة تيسير أعمال اللجان'}
+/* الاسم القديم (قبل 3.9): */ function siteTitleOld(){const S=DB.settings,many=(DB.departments||[]).length>1;return many?'أقسام '+S.college:S.dept+(S.college?' ب'+S.college:'')}
 function siteTitle(){return LBL('siteTitle',siteTitleAuto())}
 function deptOf(cid){const c=((DB&&DB.committees)||[]).find(x=>x.id===cid);return c?(c.dept||''):''}
 function deptById(id){return ((DB&&DB.departments)||[]).find(d=>d.id===id)||null}
@@ -2473,7 +2482,7 @@ renderLanding=function(){
 
   /* الشريط العلوي */
   const bar = document.createElement('div'); bar.className = 'l2-bar';
-  bar.innerHTML = '<div class="l2-brand"><span class="l2-logo"><img alt="شعار جامعة الجوف" src="' + LOGO + '"></span><span class="l2-uni"><b>جامعة الجوف</b><small>Jouf University</small></span></div>'
+  bar.innerHTML = '<div class="l2-brand"><span class="l2-logo"><img alt="الشعار" src="' + LOGO + '"></span><span class="l2-uni"><b>جامعة الجوف</b><small>Jouf University</small></span></div>'
     + '<div class="l2-act"><button type="button" class="l2-btn l2-home"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3z"/></svg>الرئيسية</button>'
     + '<button type="button" class="l2-btn l2-menu" aria-label="القائمة" aria-expanded="false">☰</button>'
     + '<div class="l2-dd hidden" role="menu"><span class="small muted l2-sync"></span>'
