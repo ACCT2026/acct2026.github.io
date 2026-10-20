@@ -280,6 +280,8 @@
         <div class="formgrid" style="margin-top:8px"><label class="f">النص الرئيسي في الشريط العلوي<input id="brName" value="${E(L.brandName || '')}" placeholder="${E(brandName())}"></label>
           <label class="f">النص الصغير تحته (اتركه فارغًا للافتراضي)<input id="brSub" value="${E(L.brandSub || '')}" placeholder="${E(brandSub())}"></label></div>
         <style>${swCss}</style><div style="margin:12px 0 6px;font-weight:700">خلفية صفحة الدخول</div><div style="display:flex;gap:12px;flex-wrap:wrap">${Object.keys(BG).map(sw).join('')}</div>
+        <label class="f" style="margin-top:12px">رابط صفحات الطلاب (الاختبارات) — اتركه فارغًا ليكون رابط الموقع نفسه<input id="brExam" dir="ltr" value="${E(L.examBase || '')}" placeholder="https://example.github.io"></label>
+        <p class="small muted" style="margin:4px 0 0">عند تحديده تُبنى روابط الاختبارات الجديدة في برنامج الجاهزية (1.31 فأحدث) عليه، فلا يظهر رابط الموقع للطلاب. يجب أن يحتوي ذلك الرابط صفحة الاختبار (حقيبة صفحات الطلاب).</p>
         <div style="margin:16px 0 6px;font-weight:700">شكل عرض اللجان في صفحة الدخول</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">${[['', 'الحالي: الأقسام ثم الوحدات المشتركة'], ['1', '1 — بطاقات موحدة'], ['2', '2 — قائمة أفقية'], ['3', '3 — بطاقات ملونة كبيرة'], ['4', '4 — البرنامج أولًا']].map(([v, l]) => `<label style="display:flex;gap:6px;align-items:center;border:1.5px solid ${String(L.layout || '') === v ? '#6A3FB5' : '#ddd'};border-radius:10px;padding:8px 12px;cursor:pointer;font-size:13.5px"><input type="radio" name="dmsLay" value="${v}" ${String(L.layout || '') === v ? 'checked' : ''} style="width:auto"> ${l}</label>`).join('')}</div>
         <p class="small muted" style="margin:6px 0 0">في الأشكال 1–4 تظهر كل لجنة واسم برنامجها دون عناوين الأقسام والوحدات المشتركة. لجنة موجودة في أكثر من قسم (مثل الجاهزية) تظهر بطاقة واحدة، وعند الضغط عليها يختار الزائر قسمه.</p>
@@ -291,6 +293,9 @@
     L.brandName = g('brName').value.trim(); L.brandSub = g('brSub').value.trim();
     const r = document.querySelector('input[name="dmsBg"]:checked'); L.bgTheme = r ? r.value : 'none';
     const ly = document.querySelector('input[name="dmsLay"]:checked'); L.layout = ly ? ly.value : '';
+    const xb = (g('brExam') ? g('brExam').value.trim() : '').replace(/\/+$/, '').replace(/\/exam\.html.*$/i, '');
+    if (xb && !/^https:\/\/[^\s\/]+\.[^\s\/]+(\/[^\s]*)?$/i.test(xb)) { alert('رابط صفحات الطلاب يجب أن يبدأ بـ https:// مثل https://example.github.io'); return; }
+    L.examBase = xb;
     try { audit('الهوية البصرية', 'الشعار: ' + (L.brandLogo === '1' ? 'ظاهر' : 'مخفي') + '، اسم الجامعة: ' + (L.hideUni ? 'مخفي' : 'ظاهر') + '، الخلفية: ' + BG[L.bgTheme].n, ''); } catch (e) {}
     save(); applyBrand(); refresh(); toast('حُفظت الهوية البصرية');
   };
