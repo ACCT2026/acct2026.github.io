@@ -344,10 +344,10 @@ function rdSumHTML(s, opt) {
       (msg ? '<div class="err">' + esc(msg) + '</div>' : '') +
       '<button class="btn wide" id="go">دخول ' + ic('send') + '</button></div></div>';
     var go = document.getElementById('go');
-    /* 1.73: القسم الذي رمّز بيانات طلابه يحفظ الطالب برمز S + آخر أرقام رقمه: نجرب الرقم كما كُتب، فإن لم يكن مسجلًا
-       نجرب الرمز (آخر 5 ثم 4 ثم 3 أرقام). الرقم الكامل لا يُحفظ في الخادم. */
+    /* 1.74: القسم الذي رمّز بيانات طلابه يحفظ الطالب برمز من آخر أرقام رقمه (مثل 445): نجرب ما كتبه الطالب، فإن لم يكن مسجلًا
+       نجرب الرمز (آخر 6 ثم 5 ثم 4 ثم 3 أرقام، والصيغة القديمة S445). الرقم الكامل لا يُحفظ في الخادم. */
     function openTry(code, raw) {
-      var C = [raw]; if (/^[0-9]{6,}$/.test(raw)) [5, 4, 3].forEach(function (k) { C.push('S' + raw.slice(-k)); });
+      var C = [raw]; if (/^[0-9]{7,}$/.test(raw)) [6, 5, 4, 3].forEach(function (k) { var c = raw.slice(-k); if (c.charAt(0) !== '0') C.push(c); C.push('S' + c); });
       var i = 0;
       function one() { S.uid = C[i]; return sb.rpc('exam_open', { p_code: code, p_uid: C[i] }).then(function (r) {
         var d = r && r.data; if (r && !r.error && d && !d.ok && !d.submitted && /غير مسجّل/.test(d.error || '') && i + 1 < C.length) { i++; return one(); }
