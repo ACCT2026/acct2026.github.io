@@ -344,13 +344,23 @@ function rdSumHTML(s, opt) {
       (msg ? '<div class="err">' + esc(msg) + '</div>' : '') +
       '<button class="btn wide" id="go">دخول ' + ic('send') + '</button></div></div>';
     var go = document.getElementById('go');
+    /* 1.73: القسم الذي رمّز بيانات طلابه يحفظ الطالب برمز S + آخر أرقام رقمه: نجرب الرقم كما كُتب، فإن لم يكن مسجلًا
+       نجرب الرمز (آخر 5 ثم 4 ثم 3 أرقام). الرقم الكامل لا يُحفظ في الخادم. */
+    function openTry(code, raw) {
+      var C = [raw]; if (/^[0-9]{6,}$/.test(raw)) [5, 4, 3].forEach(function (k) { C.push('S' + raw.slice(-k)); });
+      var i = 0;
+      function one() { S.uid = C[i]; return sb.rpc('exam_open', { p_code: code, p_uid: C[i] }).then(function (r) {
+        var d = r && r.data; if (r && !r.error && d && !d.ok && !d.submitted && /غير مسجّل/.test(d.error || '') && i + 1 < C.length) { i++; return one(); }
+        return r; }); }
+      return one();
+    }
     function submit() {
       S.code = digits(document.getElementById('fCode').value).trim().toUpperCase();
       S.uid = digits(document.getElementById('fUid').value).trim();
       var nm = document.getElementById('fName'); if (nm && nm.value) S.name = nm.value.trim();
       if (!S.code || !S.uid) { screenLogin('اكتب رمز الاختبار ورقمك الجامعي.'); return; }
       go.disabled = true; go.textContent = 'جارٍ التحقق…';
-      sb.rpc('exam_open', { p_code: S.code, p_uid: S.uid }).then(function (r) {
+      openTry(S.code, S.uid).then(function (r) {
         if (r.error) { screenLogin('تعذر الاتصال. تحقق من الإنترنت ثم حاول مرة أخرى.'); return; }
         var d = r.data;
         if (d && d.submitted) { recoverResult(d.error); return; }
